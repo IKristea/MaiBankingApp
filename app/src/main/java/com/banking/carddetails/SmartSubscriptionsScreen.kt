@@ -1,14 +1,20 @@
 package com.banking.carddetails
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Subscriptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +72,28 @@ fun Subscription(name: String, price: String, type: String, date: String) {
                 .height(1.dp)
                 .fillMaxWidth()
                 .background(Color(0xFFD0D7DA))
+        )
+    }
+}
+
+@Composable
+fun BackButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(Color.White.copy(alpha = 0.6f))
+            .border(1.dp, Color(0xFFE0E0E0), CircleShape)
+            .clickable(
+                indication = null,
+                interactionSource = MutableInteractionSource()
+            ) { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.ArrowBack,
+            contentDescription = "Back",
+            tint = Color(0xFF555555)
         )
     }
 }
