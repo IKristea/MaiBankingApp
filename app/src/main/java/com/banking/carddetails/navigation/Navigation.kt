@@ -11,7 +11,6 @@ import com.banking.carddetails.*
 object Routes {
     const val HOME = "home"
     const val CARD = "card"
-    const val SMART = "smart_subscriptions"
     const val SUBSCRIPTIONS_LIST = "subscriptions_list"
     const val SUBSCRIPTION_DETAILS = "subscription_details/{subscriptionId}"
     const val MANAGE_SUBSCRIPTION = "manage_subscription/{subscriptionId}"
@@ -44,12 +43,6 @@ fun AppNavHost(nav: NavHostController) {
                 onBack = { nav.popBackStack() },
                 onEdit = { /* TODO: Implement edit */ },
                 onSubscriptions = { nav.navigate(Routes.SUBSCRIPTIONS_LIST) }
-            )
-        }
-
-        composable(Routes.SMART) {
-            SmartSubscriptionsScreen(
-                onBack = { nav.popBackStack() }
             )
         }
 

@@ -45,15 +45,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.banking.carddetails.data.MockSubscriptionData
 import com.banking.carddetails.models.SubscriptionCategory
+import com.banking.carddetails.viewmodel.SubscriptionViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @Composable
 fun CardDetailsScreen(
     onBack: () -> Unit = {},
     onEdit: () -> Unit = {},
-    onSubscriptions: () -> Unit = {}
+    onSubscriptions: () -> Unit = {},
+    viewModel: SubscriptionViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     // Light blue background to match new design
     val background = Color(0xFFD4E8EE)
     val cardColor = Color(0xFF00A896)
@@ -127,10 +133,9 @@ fun CardDetailsScreen(
                         text = "Cont gama universal",
                         fontSize = 16.sp,
                         color = Color(0xFF1C1C1E),
-                        modifier = Modifier.weight(1f)
                     )
                     Icon(
-                        imageVector = Icons.Outlined.Edit,
+                        painter = painterResource(R.drawable.edit_wrapper),
                         contentDescription = "Edit",
                         tint = Color(0xFF1C1C1E),
                         modifier = Modifier.size(20.dp)
@@ -255,8 +260,8 @@ fun CardDetailsScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Get upcoming subscriptions
-                val upcomingSubscriptions = MockSubscriptionData.subscriptions
+                // Get upcoming subscriptions from ViewModel
+                val upcomingSubscriptions = uiState.subscriptions
                     .filter { it.category == SubscriptionCategory.UPCOMING }
                     .take(2)
 

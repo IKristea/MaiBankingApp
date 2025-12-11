@@ -24,23 +24,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.banking.carddetails.data.MockSubscriptionData
 import com.banking.carddetails.models.Subscription
 import com.banking.carddetails.models.SubscriptionCategory
+import com.banking.carddetails.viewmodel.SubscriptionViewModel
 
 @Composable
 fun SubscriptionsListScreen(
     onBack: () -> Unit = {},
     onSubscriptionClick: (String) -> Unit = {},
-    onAddSubscription: () -> Unit = {}
+    onAddSubscription: () -> Unit = {},
+    viewModel: SubscriptionViewModel = hiltViewModel()
 ) {
-    val subscriptions = remember { MockSubscriptionData.subscriptions }
-    val upcomingSubscriptions = remember {
-        subscriptions.filter { it.category == SubscriptionCategory.UPCOMING }
-    }
-    val activeSubscriptions = remember {
-        subscriptions.filter { it.category == SubscriptionCategory.ACTIVE }
-    }
+    val uiState by viewModel.uiState.collectAsState()
+
+    val upcomingSubscriptions = viewModel.getUpcomingSubscriptions()
+    val activeSubscriptions = viewModel.getActiveSubscriptions()
     var searchQuery by remember { mutableStateOf("") }
 
     Column(
@@ -48,6 +48,37 @@ fun SubscriptionsListScreen(
             .fillMaxSize()
             .background(Color(0xFFF5F5F7))
     ) {
+        // Show loading indicator if loading
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color(0xFF00A896))
+            }
+            return
+        }
+
+        // Show error message if error occurred
+        if (uiState.error != null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Error loading subscriptions",
+                        color = Color.Red,
+                        fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = { viewModel.loadSubscriptions() }) {
+                        Text("Retry")
+                    }
+                }
+            }
+            return
+        }
         // Top bar
         Surface(
             modifier = Modifier.fillMaxWidth().statusBarsPadding(),
@@ -143,7 +174,7 @@ fun SubscriptionsListScreen(
                             color = Color(0xFF1C1C1E)
                         )
                         Text(
-                            text = "-${MockSubscriptionData.getTotalUpcoming().toInt()} MDL",
+                            text = "-${viewModel.getTotalUpcoming().toInt()} MDL",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF1C1C1E)
@@ -179,7 +210,7 @@ fun SubscriptionsListScreen(
                             color = Color(0xFF1C1C1E)
                         )
                         Text(
-                            text = "-${MockSubscriptionData.getTotalActive().toInt()} MDL",
+                            text = "-${viewModel.getTotalActive().toInt()} MDL",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF1C1C1E)

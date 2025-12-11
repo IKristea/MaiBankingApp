@@ -12,7 +12,9 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.banking.carddetails.navigation.AppNavHost
 import com.banking.carddetails.ui.theme.BankingTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
