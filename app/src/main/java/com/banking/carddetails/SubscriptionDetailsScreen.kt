@@ -78,7 +78,7 @@ fun SubscriptionDetailsScreen(
 
                 // Title
                 Text(
-                    text = "Detalii",
+                    text = "Details",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -105,7 +105,7 @@ fun SubscriptionDetailsScreen(
                     modifier = Modifier.size(16.dp)
                 )
                 Text(
-                    text = "  În procesare",
+                    text = "  Processing",
                     fontSize = 14.sp,
                     color = Color(0xFFB0B0B0)
                 )
@@ -126,7 +126,7 @@ fun SubscriptionDetailsScreen(
 
             // Balance after transaction
             Text(
-                text = "Sold după tranzacție: 9 734.73 ${sub.currency}",
+                text = "Balance after transaction: 9 734.73 ${sub.currency}",
                 fontSize = 14.sp,
                 color = Color(0xFFB0B0B0),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -205,10 +205,10 @@ fun SubscriptionDetailsScreen(
                             Spacer(modifier = Modifier.height(16.dp))
 
                             // Details
-                            DetailRow("Sursa", subscriptionDetails.source)
+                            DetailRow("Source", subscriptionDetails.source)
                             Spacer(modifier = Modifier.height(12.dp))
                             DetailRow(
-                                "Suma",
+                                "Amount",
                                 "${sub.amount.toInt()}.00 ${sub.currency}",
                                 hasInfoIcon = true
                             )
@@ -217,7 +217,7 @@ fun SubscriptionDetailsScreen(
                             Spacer(modifier = Modifier.height(12.dp))
                             DetailRow("APPC", subscriptionDetails.appc)
                             Spacer(modifier = Modifier.height(12.dp))
-                            DetailRow("Informații suplimentare", subscriptionDetails.additionalInfo)
+                            DetailRow("Additional information", subscriptionDetails.additionalInfo)
 
                             Spacer(modifier = Modifier.height(16.dp))
 
@@ -231,7 +231,7 @@ fun SubscriptionDetailsScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = if (isDetailsExpanded) "Ascunde detalii" else "Arată detalii",
+                                    text = if (isDetailsExpanded) "Hide details" else "Show details",
                                     fontSize = 14.sp,
                                     color = Color(0xFF8E8E93)
                                 )

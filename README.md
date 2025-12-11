@@ -1,119 +1,274 @@
-# README - Banking App
+# Banking App
 
-A modern Android banking application built with Jetpack Compose, showcasing a beautiful card details page as the main screen.
+A modern Android banking application built with Jetpack Compose and Material Design 3. Features comprehensive card management, subscription tracking, and a beautiful UI with edge-to-edge display.
 
 ## Features
 
-- **Card Details Display**: Shows credit card information with a modern, secure design
-- **Account Balance**: Displays available balance, credit limit, and used amount
-- **Quick Actions**: Pay Bill, Transfer, and Settings buttons
-- **Recent Transactions**: Shows transaction history with amounts and dates
-- **Modern UI**: Built with Jetpack Compose using Material Design 3
-- **Responsive Design**: Optimized for various screen sizes
+### 🏠 Home Screen
+- **Card Pager**: Horizontal swipeable card carousel with page indicators
+- **Quick Actions**: Transfer, Top-up, and Bill payment shortcuts
+- **Upcoming Payments**: Visual subscription preview with service icons
+- **Transactions**: Recent transaction history
+- **Service Cards**: Quick access to credit offers and partner services
+- **Loans Section**: Promotional card for credit offers
+
+### 💳 Card Management
+- **Card Details**: Account balance, credit limit, and card information
+- **Card Actions**: Show details, Smart subscriptions, Temporary block
+- **Transaction History**: View account statements and banking dates
+
+### 🔄 Subscription Management
+- **Subscriptions List**: Complete list of monthly subscriptions with service icons
+- **Categories**: Upcoming and active subscriptions with totals
+- **Subscription Details**: Payment history, source information, transaction details
+- **Manage Flow**: Cancel subscription workflow with confirmation steps
+- **Cancellation Feedback**: Reason selection and likelihood to return survey
+
+### 🎨 Design Features
+- **Material Design 3**: Modern UI with Material 3 components
+- **Edge-to-Edge**: Immersive display with transparent status bars
+- **Smooth Animations**: Page transitions and scroll effects
+- **Service Icons**: Real brand logos for subscriptions (Spotify, Netflix, YouTube, etc.)
+- **Responsive Layout**: Optimized for various screen sizes
 
 ## Project Structure
 
 ```
 BankingApp/
 ├── app/
-│   ├── src/
-│   │   └── main/
-│   │       ├── java/com/banking/carddetails/
-│   │       │   ├── MainActivity.kt          # Main activity with UI logic
-│   │       │   └── ui/theme/
-│   │       │       ├── Theme.kt             # App theme configuration
-│   │       │       └── Type.kt              # Typography definitions
-│   │       ├── res/
-│   │       │   ├── values/
-│   │       │   │   ├── strings.xml          # String resources
-│   │       │   │   └── themes.xml           # Theme resources
-│   │       │   └── drawable/
-│   │       │       └── ic_launcher_foreground.xml
-│   │       └── AndroidManifest.xml
-│   ├── build.gradle.kts
-│   └── proguard-rules.pro
-├── settings.gradle.kts
-├── build.gradle.kts
-└── gradle/libs.versions.toml
+│   ├── src/main/java/com/banking/carddetails/
+│   │   ├── MainActivity.kt                    # Entry point with edge-to-edge setup
+│   │   ├── HomeScreen.kt                      # Main landing page with card pager
+│   │   ├── CardDetails.kt                     # Card details page
+│   │   ├── SubscriptionsListScreen.kt         # List of all subscriptions
+│   │   ├── SubscriptionDetailsScreen.kt       # Individual subscription details
+│   │   ├── ManageSubscriptionScreen.kt        # Manage/cancel subscription flow
+│   │   ├── ConfirmCancelScreen.kt             # Cancellation confirmation
+│   │   ├── CancelReasonScreen.kt              # Cancellation feedback form
+│   │   ├── LoadingScreen.kt                   # Loading state screen
+│   │   ├── SmartSubscriptionsScreen.kt        # Smart subscription detection
+│   │   ├── navigation/
+│   │   │   └── Navigation.kt                  # Navigation graph and routes
+│   │   ├── models/
+│   │   │   └── Subscription.kt                # Data models
+│   │   ├── data/
+│   │   │   └── MockSubscriptionData.kt        # Mock data source
+│   │   └── ui/theme/
+│   │       ├── Theme.kt                       # Material 3 theme
+│   │       └── Type.kt                        # Typography
+│   └── src/main/res/
+│       ├── values/
+│       │   ├── themes.xml                     # Material 3 light theme
+│       │   └── colors.xml                     # Material 3 color palette
+│       ├── values-night/
+│       │   └── themes.xml                     # Material 3 dark theme
+│       └── drawable/
+│           ├── spotify.png                    # Service icons
+│           ├── netflix.png
+│           ├── youtube_logo.png
+│           ├── amazon.png
+│           ├── icloud.png
+│           └── cupcut.png
+├── CLAUDE.md                                  # Claude Code guidance
+├── BACKEND_INTEGRATION.md                     # API integration guide
+├── UPDATE_SUMMARY.md                          # Recent updates documentation
+└── .gitignore                                 # Git ignore rules
 ```
 
 ## Tech Stack
 
-- **Language**: Kotlin
+- **Language**: Kotlin 2.2.21
 - **UI Framework**: Jetpack Compose
+- **Compose BOM**: 2025.12.00
 - **Design**: Material Design 3
-- **Minimum SDK**: 24
-- **Target SDK**: 34
+- **Navigation**: Navigation Compose 2.9.6
+- **Architecture**: MVVM-ready (currently using Compose state)
+- **Minimum SDK**: 24 (Android 7.0)
+- **Target SDK**: 36
+- **Compile SDK**: 36
 
 ## Building the Project
 
 ### Prerequisites
 
-- Android Studio (Flamingo or later)
-- JDK 8 or higher
-- Android SDK API 34
+- **Android Studio**: Ladybug or later (2024.2.1+)
+- **JDK**: 17 or higher
+- **Android SDK**: API 36
+- **Gradle**: 9.0+ (included via wrapper)
 
 ### Build Steps
 
-1. Clone or extract the project
-2. Open the project in Android Studio
-3. Sync Gradle files: `Build > Clean Project`
-4. Build the app: `Build > Build Bundle(s) / APK(s) > Build APK(s)`
+```bash
+# Clean the project
+./gradlew clean
+
+# Build debug APK
+./gradlew assembleDebug
+
+# Build release APK
+./gradlew assembleRelease
+
+# Install on connected device
+./gradlew installDebug
+```
 
 ### Running the App
 
-1. Connect an Android device or start an emulator
-2. Click `Run > Run 'app'` or press `Shift + F10`
+**From Android Studio:**
+1. Open the project in Android Studio
+2. Let Gradle sync complete
+3. Connect an Android device or start an emulator
+4. Click `Run > Run 'app'` or press `Shift + F10`
 
-## Components
+**From Command Line:**
+```bash
+./gradlew installDebug
+```
 
-### MainActivity
-- Entry point of the application
-- Sets up Jetpack Compose for the UI
-- Implements all composable screens
+## Navigation Flow
 
-### Key Composables
+```
+HomeScreen (start)
+  ├─> CardDetailsScreen
+  │    └─> SubscriptionsListScreen
+  │         └─> SubscriptionDetailsScreen
+  │              └─> ManageSubscriptionScreen
+  │                   └─> ConfirmCancelScreen
+  │                        └─> CancelReasonScreen
+  │
+  └─> SubscriptionsListScreen (via Upcoming Payments)
+       └─> (same flow as above)
+```
 
-- **CardDetailsScreen()**: Main screen container
-- **HeaderSection()**: Top header with title
-- **CreditCardSection()**: Beautiful credit card display
-- **BalanceSection()**: Account balance information
-- **QuickActionsSection()**: Action buttons
-- **RecentTransactionsSection()**: Transaction list
-- **TransactionItem()**: Individual transaction display
+## Key Components
 
-## Theme Colors
+### Screens
+- **HomeScreen**: Landing page with card pager, quick actions, and content preview
+- **CardDetailsScreen**: Account and card information display
+- **SubscriptionsListScreen**: All subscriptions grouped by category
+- **SubscriptionDetailsScreen**: Transaction history and subscription info
+- **ManageSubscriptionScreen**: Service-specific cancellation flow
+- **ConfirmCancelScreen**: Cancellation confirmation dialog
+- **CancelReasonScreen**: Feedback collection form
 
-- **Primary**: #1F77D2 (Blue)
-- **Secondary**: #FF6B6B (Red)
-- **Tertiary**: #4CAF50 (Green)
-- **Background**: #F5F5F5 (Light Gray)
+### Data Models
+- **Subscription**: Service name, amount, frequency, status
+- **SubscriptionDetails**: Extended info with payment history
+- **CancellationFeedback**: Reason and likelihood to return
+- **PaymentHistoryItem**: Individual payment record
+
+## Theme & Colors
+
+### Material 3 Color Palette
+- **Primary**: #00A896 (Teal)
+- **Secondary**: #00C896 (Green)
+- **Tertiary**: #1E5A6E (Dark Teal)
+- **Background**: #F5F5F7 (Light Gray)
+- **Surface**: #FFFFFF (White)
+- **Error**: #BA1A1A (Red)
+
+### Design System
+- Transparent status bar with edge-to-edge display
+- Light status bar icons (dark mode aware)
+- Rounded corners (8dp, 12dp, 16dp, 24dp)
+- Elevation and shadows for depth
+- Custom gradient backgrounds
+
+## Backend Integration
+
+The app is ready for backend integration. See `BACKEND_INTEGRATION.md` for:
+- API endpoint specifications
+- Request/response formats
+- Data model mapping
+- ViewModel implementation guide
+- Authentication setup
+
+### Current Mock Data
+All screens use `MockSubscriptionData.kt` for demonstration:
+- 9 sample subscriptions (Amazon, Spotify, Netflix, YouTube, etc.)
+- 9 predefined cancellation reasons
+- Payment history samples
 
 ## Customization
 
-You can easily customize the app by:
+### Adding New Subscriptions
+1. Add service icon to `res/drawable/`
+2. Update `getSubscriptionIcon()` in `SubscriptionsListScreen.kt` and `SubscriptionDetailsScreen.kt`
+3. Add subscription to `MockSubscriptionData.subscriptions`
 
-1. **Change Card Details**: Modify the hardcoded values in `CreditCardSection()`
-2. **Update Balance**: Edit the balance amount in `BalanceSection()`
-3. **Add Transactions**: Add more `TransactionItem()` calls in `RecentTransactionsSection()`
-4. **Modify Colors**: Update colors in `ui/theme/Theme.kt`
+### Modifying Colors
+1. Edit `res/values/colors.xml` for Material 3 colors
+2. Update theme in `res/values/themes.xml`
+3. Compose colors in `ui/theme/Theme.kt`
+
+### Adding New Screens
+1. Create screen composable in `com.banking.carddetails`
+2. Add route to `navigation/Routes` object
+3. Register in `AppNavHost` in `Navigation.kt`
+
+## Development
+
+### Code Style
+- Stateless composables with callback parameters
+- Navigation callbacks instead of NavController exposure
+- Material 3 design system
+- Compose best practices
+- Edge-to-edge layout with `.statusBarsPadding()`
+
+### Testing
+```bash
+# Run unit tests
+./gradlew test
+
+# Run instrumentation tests
+./gradlew connectedAndroidTest
+```
 
 ## Future Enhancements
 
-- Add state management with ViewModel
-- Implement API integration for real card data
-- Add authentication screens
-- Create card management section
-- Add more detailed transaction details page
-- Implement dark mode support
-- Add animations and transitions
+- [ ] ViewModel integration for state management
+- [ ] Repository pattern with Retrofit
+- [ ] User authentication and security
+- [ ] Biometric authentication
+- [ ] Real-time transaction notifications
+- [ ] Add/Edit/Delete subscriptions
+- [ ] Budget tracking and analytics
+- [ ] Export transaction history
+- [ ] Multi-card support
+- [ ] Offline mode with Room database
+- [ ] Dark mode improvements
+- [ ] Accessibility enhancements
+- [ ] Widget support
+
+## Documentation
+
+- **CLAUDE.md**: Guidance for Claude Code when working in this repository
+- **BACKEND_INTEGRATION.md**: API integration specifications and guide
+- **UPDATE_SUMMARY.md**: Recent updates and changes
+
+## Resources
+
+### Android Development
+- [Jetpack Compose Documentation](https://developer.android.com/jetpack/compose)
+- [Material Design 3](https://m3.material.io/)
+- [Navigation Compose](https://developer.android.com/jetpack/compose/navigation)
+- [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
+
+### Design Resources
+- Service icons from official brand assets
+- Material Design color system
+- Edge-to-edge display guidelines
 
 ## License
 
-This project is provided as a demo application.
+This project is provided as a demo application for educational purposes.
 
-## Support
+## Contributing
 
-For questions or issues, please refer to the Android Jetpack Compose documentation:
-- https://developer.android.com/jetpack/compose
-- https://developer.android.com/guide/topics/ui/look-and-feel/themes
+This is a demonstration project. For production use:
+1. Implement proper authentication
+2. Integrate with secure backend API
+3. Add comprehensive error handling
+4. Implement proper state management
+5. Add unit and integration tests
+6. Follow security best practices for financial apps

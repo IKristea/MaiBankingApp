@@ -46,14 +46,12 @@ fun SubscriptionsListScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-
             .background(Color(0xFFF5F5F7))
     ) {
         // Top bar
         Surface(
             modifier = Modifier.fillMaxWidth().statusBarsPadding(),
-            color = Color.White,
-            shadowElevation = 2.dp
+            color = Color(0xFFF5F5F7)
         ) {
             Row(
                 modifier = Modifier
@@ -75,18 +73,20 @@ fun SubscriptionsListScreen(
                     modifier = Modifier.weight(1f),
                     color = Color(0xFF1C1C1E)
                 )
-                IconButton(
-                    onClick = onAddSubscription,
+                Box(
+
                     modifier = Modifier
-                        .size(18.dp)
+                        .size(24.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFF00C896))
+                        .background(Color(0xFF00C896)).clickable{
+                            onAddSubscription()
+                        }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Add,
                         contentDescription = "Add subscription",
                         tint = Color.White,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(40.dp)
                     )
                 }
             }
@@ -137,7 +137,7 @@ fun SubscriptionsListScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Upcoming",
+                            text = "Upcoming renewals",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF1C1C1E)
@@ -173,7 +173,7 @@ fun SubscriptionsListScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Subs",
+                            text = "Subscriptions",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF1C1C1E)

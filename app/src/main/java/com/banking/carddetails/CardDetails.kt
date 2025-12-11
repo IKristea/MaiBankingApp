@@ -1,27 +1,52 @@
 package com.banking.carddetails
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.ChevronRight
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.History
+import androidx.compose.material.icons.outlined.Receipt
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.SwapHoriz
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.banking.carddetails.data.MockSubscriptionData
+import com.banking.carddetails.models.SubscriptionCategory
 
 @Composable
 fun CardDetailsScreen(
@@ -115,69 +140,26 @@ fun CardDetailsScreen(
 
             item {
                 Text(
-                    text = "15 000",
+                    text = "15 000.00 MDL",
                     fontSize = 36.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1C1C1E)
                 )
-                Text(
-                    text = ".00 MDL",
-                    fontSize = 20.sp,
-                    color = Color(0xFF1C1C1E)
-                )
             }
 
-            // Card
             item {
-                Surface(
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(160.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    color = cardColor,
-                    shadowElevation = 4.dp
+                        .height(120.dp)
                 ) {
-                    Column(
+                    // Background image
+                    Image(
+                        painter = painterResource(R.drawable.card_icon),
+                        contentDescription = "Card background",
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        Text(
-                            text = "maib gama",
-                            fontSize = 12.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.Bottom
-                        ) {
-                            Text(
-                                text = "1111",
-                                fontSize = 20.sp,
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold
-                            )
-                            // Mastercard logo
-                            Row {
-                                Box(
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .clip(CircleShape)
-                                        .background(Color(0xFFFF5F00))
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .offset(x = (-8).dp)
-                                        .size(24.dp)
-                                        .clip(CircleShape)
-                                        .background(Color(0xFFEB001B))
-                                )
-                            }
-                        }
-                    }
+                            .clip(RoundedCornerShape(16.dp)),
+                        contentScale = ContentScale.FillWidth
+                    )
                 }
             }
 
@@ -189,19 +171,19 @@ fun CardDetailsScreen(
                 ) {
                     ActionButton(
                         icon = Icons.Outlined.Receipt,
-                        label = "Plăți"
+                        label = "Payments"
                     )
                     ActionButton(
                         icon = Icons.Outlined.SwapHoriz,
-                        label = "Transferuri"
+                        label = "Transfers"
                     )
                 }
             }
 
-            // Informații section
+            // Information section
             item {
                 Text(
-                    text = "Informații",
+                    text = "Information",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF1C1C1E)
@@ -217,29 +199,29 @@ fun CardDetailsScreen(
                     Column {
                         MenuListItem(
                             icon = Icons.Outlined.History,
-                            title = "Istoria tranzacțiilor",
+                            title = "Transaction history",
                             onClick = {}
                         )
                         Divider(color = Color(0xFFE5E5EA))
                         MenuListItem(
                             icon = Icons.Outlined.Receipt,
-                            title = "Extrasul de cont",
+                            title = "Account statement",
                             onClick = {}
                         )
                         Divider(color = Color(0xFFE5E5EA))
                         MenuListItem(
                             icon = Icons.Outlined.CalendarMonth,
-                            title = "Date bancare",
+                            title = "Banking details",
                             onClick = {}
                         )
                     }
                 }
             }
 
-            // Plăți și transferuri section
+            // Payments and transfers section
             item {
                 Text(
-                    text = "Plăți și transferuri",
+                    text = "Payments and transfers",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF1C1C1E)
@@ -254,9 +236,97 @@ fun CardDetailsScreen(
                 ) {
                     MenuListItem(
                         icon = Icons.Outlined.Refresh,
-                        title = "Monthly Subscriptions",
+                        title = "Subscriptions",
                         onClick = onSubscriptions
                     )
+                }
+            }
+
+            // Upcoming payments section
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Upcoming payments",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF1C1C1E)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Get upcoming subscriptions
+                val upcomingSubscriptions = MockSubscriptionData.subscriptions
+                    .filter { it.category == SubscriptionCategory.UPCOMING }
+                    .take(2)
+
+                upcomingSubscriptions.forEach { subscription ->
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp)
+                            .clickable(onClick = onSubscriptions),
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color.White
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Service icon
+                            val iconRes = getSubscriptionIcon(subscription.name)
+                            if (iconRes != null) {
+                                Image(
+                                    painter = painterResource(id = iconRes),
+                                    contentDescription = subscription.name,
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Fit
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(CircleShape)
+                                        .background(getSubscriptionColor(subscription.name)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = subscription.name.first().toString(),
+                                        color = Color.White,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = subscription.name,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color(0xFF1C1C1E)
+                                )
+                                Text(
+                                    text = "Tomorrow",
+                                    fontSize = 14.sp,
+                                    color = Color(0xFF8E8E93)
+                                )
+                            }
+
+                            Text(
+                                text = "${subscription.amount.toInt()}.00 ${subscription.currency}",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF1C1C1E)
+                            )
+                        }
+                    }
                 }
             }
 
@@ -264,6 +334,33 @@ fun CardDetailsScreen(
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
+    }
+}
+
+@Composable
+private fun getSubscriptionIcon(name: String): Int? {
+    return when (name.lowercase()) {
+        "amazon" -> R.drawable.amazon
+        "youtube" -> R.drawable.youtube_logo
+        "netflix" -> R.drawable.netflix
+        "spotify" -> R.drawable.spotify
+        "capcut" -> R.drawable.cupcut
+        "icloud" -> R.drawable.icloud
+        else -> null
+    }
+}
+
+@Composable
+private fun getSubscriptionColor(name: String): Color {
+    return when (name.lowercase()) {
+        "amazon" -> Color(0xFFFF9900)
+        "youtube" -> Color(0xFFFF0000)
+        "netflix" -> Color(0xFFE50914)
+        "spotify" -> Color(0xFF1DB954)
+        "capcut" -> Color(0xFF000000)
+        "icloud" -> Color(0xFF0071E3)
+        "canva pro" -> Color(0xFF00C4CC)
+        else -> Color(0xFF6366F1)
     }
 }
 
