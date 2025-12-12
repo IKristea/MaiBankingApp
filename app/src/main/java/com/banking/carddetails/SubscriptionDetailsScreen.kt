@@ -232,52 +232,102 @@ fun SubscriptionDetailsScreen(
                                         modifier = Modifier.size(20.dp)
                                     )
                                 }
+
+                                // History section - shown/hidden based on isPaidSubscriptionsExpanded
+                                if (isPaidSubscriptionsExpanded) {
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Divider(color = Color(0xFFE5E5EA))
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    // History header
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 8.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = "History",
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color(0xFF1C1C1E)
+                                        )
+                                        Text(
+                                            text = "-${
+                                                subscriptionDetails.paymentHistory.sumOf { it.amount }
+                                                    .toInt()
+                                            } ${sub.currency}",
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color(0xFF1C1C1E)
+                                        )
+                                    }
+
+                                    // Payment history items
+                                    subscriptionDetails.paymentHistory.forEach { payment ->
+                                        PaymentHistoryItem(
+                                            serviceName = sub.name,
+                                            date = payment.date,
+                                            amount = payment.amount,
+                                            currency = payment.currency,
+                                            color = getSubscriptionColor(sub.name),
+                                            onClick = {
+                                                onPaymentHistoryClick(subscriptionId)
+                                            }
+                                        )
+                                    }
+                                }
                             }
                         }
 
                         Spacer(modifier = Modifier.height(20.dp))
                     }
 
-                    // History section
                     item {
-                        Row(
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
+
+                    // Chat support button
+                    item {
+                        Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .clickable { /* TODO: Handle chat support click */ },
+                            shape = RoundedCornerShape(12.dp),
+                            color = Color.White,
+                            shadowElevation = 1.dp
                         ) {
-                            Text(
-                                text = "History",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF1C1C1E)
-                            )
-                            Text(
-                                text = "-${
-                                    subscriptionDetails.paymentHistory.sumOf { it.amount }.toInt()
-                                } ${sub.currency}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF1C1C1E)
-                            )
-                        }
-                    }
-
-                    items(subscriptionDetails.paymentHistory) { payment ->
-                        PaymentHistoryItem(
-                            serviceName = sub.name,
-                            date = payment.date,
-                            amount = payment.amount,
-                            currency = payment.currency,
-                            color = getSubscriptionColor(sub.name),
-                            onClick = {
-                                onPaymentHistoryClick(subscriptionId)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Chat,
+                                        contentDescription = null,
+                                        tint = Color(0xFF34C759),
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Text(
+                                        text = "Chat support",
+                                        fontSize = 16.sp,
+                                        color = Color(0xFF1C1C1E)
+                                    )
+                                }
+                                Icon(
+                                    imageVector = Icons.Outlined.KeyboardArrowRight,
+                                    contentDescription = null,
+                                    tint = Color(0xFF8E8E93),
+                                    modifier = Modifier.size(24.dp)
+                                )
                             }
-                        )
-                    }
+                        }
 
-                    item {
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
 

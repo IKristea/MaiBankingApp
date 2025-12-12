@@ -38,6 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.banking.carddetails.models.SubscriptionCategory
 
+// Singleton to track if banner has been shown
+private object BannerState {
+    var hasBeenShown = false
+}
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -48,16 +53,17 @@ fun HomeScreen(
     val pagerState = rememberPagerState(pageCount = { 3 })
     val context = LocalContext.current
 
-    var showToast by remember { mutableStateOf(true) }
+    var showToast by remember { mutableStateOf(!BannerState.hasBeenShown) }
     val upcomingSubscription = remember {
         MockSubscriptionData.subscriptions.firstOrNull { it.category == SubscriptionCategory.UPCOMING }
     }
 
-    // Auto-hide toast after 3 seconds
-    LaunchedEffect(showToast) {
-        if (showToast) {
-            delay(2000)
+    // Auto-hide toast after 3 seconds - only runs once per app session
+    LaunchedEffect(Unit) {
+        if (showToast && !BannerState.hasBeenShown) {
+            delay(3000)
             showToast = false
+            BannerState.hasBeenShown = true
         }
     }
 
@@ -270,37 +276,42 @@ fun HomeScreen(
                                             color = Color(0xFF1C1C1E)
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
-                                        // Subscription icons row with overlap
+                                        // Subscription icons row with overlap - dynamic
                                         Row {
-                                            // Spotify icon
-                                            Image(
-                                                painter = painterResource(id = R.drawable.spotify),
-                                                contentDescription = "Spotify",
-                                                modifier = Modifier
-                                                    .size(28.dp)
-                                                    .clip(CircleShape),
-                                                contentScale = ContentScale.Fit
-                                            )
-                                            // YouTube icon
-                                            Image(
-                                                painter = painterResource(id = R.drawable.youtube_logo),
-                                                contentDescription = "YouTube",
-                                                modifier = Modifier
-                                                    .offset(x = (-8).dp)
-                                                    .size(28.dp)
-                                                    .clip(CircleShape),
-                                                contentScale = ContentScale.Fit
-                                            )
-                                            // Netflix icon
-                                            Image(
-                                                painter = painterResource(id = R.drawable.netflix),
-                                                contentDescription = "Netflix",
-                                                modifier = Modifier
-                                                    .offset(x = (-16).dp)
-                                                    .size(28.dp)
-                                                    .clip(CircleShape),
-                                                contentScale = ContentScale.Fit
-                                            )
+                                            val upcomingSubs = MockSubscriptionData.subscriptions
+                                                .filter { it.category == SubscriptionCategory.UPCOMING }
+                                                .take(3)
+
+                                            upcomingSubs.forEachIndexed { index, sub ->
+                                                val iconRes = getSubscriptionIconRes(sub.name)
+                                                if (iconRes != null) {
+                                                    Image(
+                                                        painter = painterResource(id = iconRes),
+                                                        contentDescription = sub.name,
+                                                        modifier = Modifier
+                                                            .offset(x = (index * -8).dp)
+                                                            .size(28.dp)
+                                                            .clip(CircleShape),
+                                                        contentScale = ContentScale.Fit
+                                                    )
+                                                } else {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .offset(x = (index * -8).dp)
+                                                            .size(28.dp)
+                                                            .clip(CircleShape)
+                                                            .background(getSubscriptionColorRes(sub.name)),
+                                                        contentAlignment = Alignment.Center
+                                                    ) {
+                                                        Text(
+                                                            text = sub.name.first().toString(),
+                                                            color = Color.White,
+                                                            fontSize = 12.sp,
+                                                            fontWeight = FontWeight.Bold
+                                                        )
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                     Spacer(modifier = Modifier.height(4.dp))
@@ -701,6 +712,32 @@ fun CardItem(
             )
         }
     }
+
+// Helper functions for subscription icons and colors
+fun getSubscriptionIconRes(name: String): Int? {
+    return when (name.lowercase()) {
+        "amazon" -> R.drawable.amazon
+        "youtube" -> R.drawable.youtube_logo
+        "netflix" -> R.drawable.netflix
+        "spotify" -> R.drawable.spotify
+        "capcut" -> R.drawable.cupcut
+        "icloud" -> R.drawable.icloud
+        else -> null
+    }
+}
+
+fun getSubscriptionColorRes(name: String): Color {
+    return when (name.lowercase()) {
+        "amazon" -> Color(0xFFFF9900)
+        "youtube" -> Color(0xFFFF0000)
+        "netflix" -> Color(0xFFE50914)
+        "spotify" -> Color(0xFF1DB954)
+        "capcut" -> Color(0xFF000000)
+        "icloud" -> Color(0xFF0071E3)
+        "canva pro" -> Color(0xFF00C4CC)
+        else -> Color(0xFF6366F1)
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
