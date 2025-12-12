@@ -30,6 +30,7 @@ data class SubscriptionDetails(
     val rrn: String,
     val appc: String,
     val additionalInfo: String,
+    val nextBillingDate: String,
     val paymentHistory: List<PaymentHistoryItem>
 )
 

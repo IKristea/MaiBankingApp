@@ -2,7 +2,6 @@ package com.banking.carddetails
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,17 +24,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.banking.carddetails.data.MockSubscriptionData
-import com.banking.carddetails.models.SubscriptionDetails
 
 @Composable
 fun SubscriptionDetailsScreen(
     subscriptionId: String,
     onBack: () -> Unit = {},
+    onPaymentHistoryClick: (String) -> Unit = {},
     onManageSubscription: (String) -> Unit = {}
 ) {
     val subscriptionDetails =
         remember { MockSubscriptionData.getSubscriptionDetails(subscriptionId) }
-    var isDetailsExpanded by remember { mutableStateOf(true) }
+    var isPaidSubscriptionsExpanded by remember { mutableStateOf(false) }
 
     if (subscriptionDetails == null) {
         Box(
@@ -61,7 +60,7 @@ fun SubscriptionDetailsScreen(
                 .statusBarsPadding()
                 .padding(16.dp)
         ) {
-            // Back button
+            // Back button and title
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
                     onClick = onBack,
@@ -74,44 +73,19 @@ fun SubscriptionDetailsScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Title
                 Text(
                     text = "Details",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(end = 40.dp).fillMaxWidth()
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Date and status
-            Row(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "05.12.2025 • 11:42  |  ",
-                    fontSize = 14.sp,
-                    color = Color(0xFFB0B0B0)
-                )
-                Icon(
-                    imageVector = Icons.Outlined.Refresh,
-                    contentDescription = null,
-                    tint = Color(0xFFB0B0B0),
-                    modifier = Modifier.size(16.dp)
-                )
-                Text(
-                    text = "  Processing",
-                    fontSize = 14.sp,
-                    color = Color(0xFFB0B0B0)
+                    modifier = Modifier
+                        .padding(end = 40.dp)
+                        .fillMaxWidth()
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Amount
             Text(
@@ -122,11 +96,11 @@ fun SubscriptionDetailsScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Balance after transaction
+            // Billing frequency
             Text(
-                text = "Balance after transaction: 9 734.73 ${sub.currency}",
+                text = "billed monthly",
                 fontSize = 14.sp,
                 color = Color(0xFFB0B0B0),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -143,230 +117,218 @@ fun SubscriptionDetailsScreen(
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             color = Color.White
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp)
+            Column(
+                modifier = Modifier.fillMaxSize()
             ) {
-                // Subscription info card
-                item {
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        color = Color.White,
-                        shadowElevation = 2.dp
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(20.dp)
+                ) {
+                    // Subscription info card
+                    item {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            color = Color.White,
+                            shadowElevation = 2.dp
                         ) {
-                            // Logo and name
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
+                            Column(
+                                modifier = Modifier.padding(16.dp)
                             ) {
-                                // Use actual icon from drawable
-                                val iconRes = getSubscriptionIcon(sub.name)
-                                if (iconRes != null) {
-                                    Image(
-                                        painter = painterResource(id = iconRes),
-                                        contentDescription = sub.name,
-                                        modifier = Modifier
-                                            .size(48.dp)
-                                            .clip(CircleShape),
-                                        contentScale = ContentScale.Fit
+                                // Logo and name
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    val iconRes = getSubscriptionIcon(sub.name)
+                                    if (iconRes != null) {
+                                        Image(
+                                            painter = painterResource(id = iconRes),
+                                            contentDescription = sub.name,
+                                            modifier = Modifier
+                                                .size(48.dp)
+                                                .clip(CircleShape),
+                                            contentScale = ContentScale.Fit
+                                        )
+                                    } else {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(48.dp)
+                                                .clip(CircleShape)
+                                                .background(getSubscriptionColor(sub.name)),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = sub.name.first().toString(),
+                                                color = Color.White,
+                                                fontSize = 20.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Text(
+                                        text = sub.name,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF1C1C1E)
                                     )
-                                } else {
-                                    // Fallback to colored circle
-                                    Box(
-                                        modifier = Modifier
-                                            .size(48.dp)
-                                            .clip(CircleShape)
-                                            .background(getSubscriptionColor(sub.name)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
+                                }
+
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Divider(color = Color(0xFFE5E5EA))
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Upcoming renewal
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = "Upcoming renewal",
+                                        fontSize = 14.sp,
+                                        color = Color(0xFF8E8E93)
+                                    )
+                                    Column(horizontalAlignment = Alignment.End) {
                                         Text(
-                                            text = sub.name.first().toString(),
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
+                                            text = subscriptionDetails.nextBillingDate,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Color(0xFF1C1C1E)
+                                        )
+                                        Text(
+                                            text = "${sub.amount.toInt()}.00 ${sub.currency}",
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Color(0xFF1C1C1E)
                                         )
                                     }
                                 }
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Text(
-                                    text = sub.name,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1C1C1E)
-                                )
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Paid subscriptions toggle
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            isPaidSubscriptionsExpanded =
+                                                !isPaidSubscriptionsExpanded
+                                        }
+                                        .padding(vertical = 8.dp),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Paid subscriptions",
+                                        fontSize = 14.sp,
+                                        color = Color(0xFF8E8E93)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Icon(
+                                        imageVector = if (isPaidSubscriptionsExpanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
+                                        contentDescription = null,
+                                        tint = Color(0xFF8E8E93),
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
                             }
+                        }
 
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Divider(color = Color(0xFFE5E5EA))
-                            Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
 
-                            // Details
-                            DetailRow("Source", subscriptionDetails.source)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            DetailRow(
-                                "Amount",
-                                "${sub.amount.toInt()}.00 ${sub.currency}",
-                                hasInfoIcon = true
+                    // History section
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "History",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF1C1C1E)
                             )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            DetailRow("RRN", subscriptionDetails.rrn)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            DetailRow("APPC", subscriptionDetails.appc)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            DetailRow("Additional information", subscriptionDetails.additionalInfo)
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            // Toggle details
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { isDetailsExpanded = !isDetailsExpanded }
-                                    .padding(vertical = 8.dp),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = if (isDetailsExpanded) "Hide details" else "Show details",
-                                    fontSize = 14.sp,
-                                    color = Color(0xFF8E8E93)
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Icon(
-                                    imageVector = if (isDetailsExpanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
-                                    contentDescription = null,
-                                    tint = Color(0xFF8E8E93),
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
+                            Text(
+                                text = "-${
+                                    subscriptionDetails.paymentHistory.sumOf { it.amount }.toInt()
+                                } ${sub.currency}",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF1C1C1E)
+                            )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
+                    items(subscriptionDetails.paymentHistory) { payment ->
+                        PaymentHistoryItem(
+                            serviceName = sub.name,
+                            date = payment.date,
+                            amount = payment.amount,
+                            currency = payment.currency,
+                            color = getSubscriptionColor(sub.name),
+                            onClick = {
+                                onPaymentHistoryClick(subscriptionId)
+                            }
+                        )
+                    }
 
-                // History section
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "History",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF1C1C1E)
-                        )
-                        Text(
-                            text = "-387 ${sub.currency}",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF1C1C1E)
-                        )
+                    item {
+                        Spacer(modifier = Modifier.height(20.dp))
                     }
                 }
 
-                items(subscriptionDetails.paymentHistory) { payment ->
-                    PaymentHistoryRow(
-                        serviceName = sub.name,
-                        date = payment.date,
-                        amount = payment.amount,
-                        currency = payment.currency,
-                        color = getSubscriptionColor(sub.name)
+                // Manage subscription button - fixed at bottom
+                Button(
+                    onClick = { onManageSubscription(subscriptionId) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .padding(bottom = 20.dp)
+                        .height(56.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFF2F2F7)
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Block,
+                        contentDescription = null,
+                        tint = Color(0xFF1C1C1E),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Manage subscription",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF1C1C1E)
                     )
                 }
-
-                item {
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-
-                // Manage subscription button
-                item {
-                    Button(
-                        onClick = { onManageSubscription(subscriptionId) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFF2F2F7)
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Block,
-                            contentDescription = null,
-                            tint = Color(0xFF1C1C1E),
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Manage subscription",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color(0xFF1C1C1E)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(32.dp))
-                }
             }
         }
     }
 }
 
 @Composable
-private fun DetailRow(label: String, value: String, hasInfoIcon: Boolean = false) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            fontSize = 14.sp,
-            color = Color(0xFF8E8E93)
-        )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = value,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color(0xFF1C1C1E)
-            )
-            if (hasInfoIcon) {
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = null,
-                    tint = Color(0xFF8E8E93),
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun PaymentHistoryRow(
+private fun PaymentHistoryItem(
     serviceName: String,
     date: String,
     amount: Double,
     currency: String,
-    color: Color
+    color: Color,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Use actual icon from drawable
         val iconRes = getSubscriptionIcon(serviceName)
         if (iconRes != null) {
             Image(
@@ -378,7 +340,6 @@ private fun PaymentHistoryRow(
                 contentScale = ContentScale.Fit
             )
         } else {
-            // Fallback to colored circle
             Box(
                 modifier = Modifier
                     .size(40.dp)

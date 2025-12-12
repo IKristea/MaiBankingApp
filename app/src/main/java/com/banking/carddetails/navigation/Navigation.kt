@@ -14,12 +14,14 @@ object Routes {
     const val SMART = "smart_subscriptions"
     const val SUBSCRIPTIONS_LIST = "subscriptions_list"
     const val SUBSCRIPTION_DETAILS = "subscription_details/{subscriptionId}"
+    const val SUBSCRIPTION_PAYMENT_HISTORY = "subscription_payment_history/{subscriptionId}"
     const val MANAGE_SUBSCRIPTION = "manage_subscription/{subscriptionId}"
     const val CONFIRM_CANCEL = "confirm_cancel/{subscriptionId}"
     const val CANCEL_REASON = "cancel_reason/{subscriptionId}"
     const val LOADING = "loading"
 
     fun subscriptionDetails(subscriptionId: String) = "subscription_details/$subscriptionId"
+    fun subscriptionPaymentHistory(subscriptionId: String) = "subscription_payment_history/$subscriptionId"
     fun manageSubscription(subscriptionId: String) = "manage_subscription/$subscriptionId"
     fun confirmCancel(subscriptionId: String) = "confirm_cancel/$subscriptionId"
     fun cancelReason(subscriptionId: String) = "cancel_reason/$subscriptionId"
@@ -71,6 +73,23 @@ fun AppNavHost(nav: NavHostController) {
         ) { backStackEntry ->
             val subscriptionId = backStackEntry.arguments?.getString("subscriptionId") ?: ""
             SubscriptionDetailsScreen(
+                subscriptionId = subscriptionId,
+                onBack = { nav.popBackStack() },
+                onPaymentHistoryClick = { id ->
+                    nav.navigate(Routes.subscriptionPaymentHistory(id))
+                },
+                onManageSubscription = { id ->
+                    nav.navigate(Routes.manageSubscription(id))
+                }
+            )
+        }
+
+        composable(
+            route = Routes.SUBSCRIPTION_PAYMENT_HISTORY,
+            arguments = listOf(navArgument("subscriptionId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val subscriptionId = backStackEntry.arguments?.getString("subscriptionId") ?: ""
+            SubscriptionPaymentHistoryScreen(
                 subscriptionId = subscriptionId,
                 onBack = { nav.popBackStack() },
                 onManageSubscription = { id ->

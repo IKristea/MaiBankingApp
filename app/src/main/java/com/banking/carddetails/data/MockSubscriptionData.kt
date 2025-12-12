@@ -109,17 +109,18 @@ object MockSubscriptionData {
             rrn = "21834728493232",
             appc = "846253",
             additionalInfo = "Chișinău",
+            nextBillingDate = "05.01.2026",
             paymentHistory = listOf(
+                PaymentHistoryItem(
+                    date = "05.12.2025",
+                    amount = subscription.amount
+                ),
                 PaymentHistoryItem(
                     date = "05.11.2025",
                     amount = subscription.amount
                 ),
                 PaymentHistoryItem(
                     date = "05.10.2025",
-                    amount = subscription.amount
-                ),
-                PaymentHistoryItem(
-                    date = "05.09.2025",
                     amount = subscription.amount
                 )
             )
