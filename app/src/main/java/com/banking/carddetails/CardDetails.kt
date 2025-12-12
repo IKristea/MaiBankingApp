@@ -122,18 +122,18 @@ fun CardDetailsScreen(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
+
                 ) {
                     Text(
                         text = "Cont gama universal",
                         fontSize = 16.sp,
-                        color = Color(0xFF1C1C1E),
-                        modifier = Modifier.weight(1f)
+                        color = Color(0xFF1C1C1E)
                     )
                     Icon(
-                        imageVector = Icons.Outlined.Edit,
+                        painter =painterResource(R.drawable.edit_wrapper),
                         contentDescription = "Edit",
                         tint = Color(0xFF1C1C1E),
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(20.dp).padding(start = 8.dp)
                     )
                 }
             }
