@@ -27,11 +27,10 @@ import com.banking.carddetails.data.MockSubscriptionData
 @Composable
 fun SubscriptionPaymentHistoryScreen(
     subscriptionId: String,
-    onBack: () -> Unit = {},
-    onManageSubscription: (String) -> Unit = {}
+    onBack: () -> Unit = {}
 ) {
     val subscriptionDetails = remember { MockSubscriptionData.getSubscriptionDetails(subscriptionId) }
-    var isDetailsExpanded by remember { mutableStateOf(true) }
+    var isDetailsExpanded by remember { mutableStateOf(false) }
 
     if (subscriptionDetails == null) {
         Box(
@@ -200,7 +199,7 @@ fun SubscriptionPaymentHistoryScreen(
                             Divider(color = Color(0xFFE5E5EA))
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            // Details
+                            // Always visible details
                             DetailRow("Source", subscriptionDetails.source)
                             Spacer(modifier = Modifier.height(12.dp))
                             DetailRow(
@@ -208,12 +207,16 @@ fun SubscriptionPaymentHistoryScreen(
                                 "${sub.amount.toInt()}.00 ${sub.currency}",
                                 hasInfoIcon = true
                             )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            DetailRow("RRN", subscriptionDetails.rrn)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            DetailRow("APPC", subscriptionDetails.appc)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            DetailRow("Additional information", subscriptionDetails.additionalInfo)
+
+                            // Additional details - shown/hidden based on isDetailsExpanded
+                            if (isDetailsExpanded) {
+                                Spacer(modifier = Modifier.height(12.dp))
+                                DetailRow("RRN", subscriptionDetails.rrn)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                DetailRow("APPC", subscriptionDetails.appc)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                DetailRow("Additional information", subscriptionDetails.additionalInfo)
+                            }
 
                             Spacer(modifier = Modifier.height(16.dp))
 

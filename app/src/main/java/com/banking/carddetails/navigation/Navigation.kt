@@ -92,9 +92,6 @@ fun AppNavHost(nav: NavHostController) {
             SubscriptionPaymentHistoryScreen(
                 subscriptionId = subscriptionId,
                 onBack = { nav.popBackStack() },
-                onManageSubscription = { id ->
-                    nav.navigate(Routes.manageSubscription(id))
-                }
             )
         }
 
