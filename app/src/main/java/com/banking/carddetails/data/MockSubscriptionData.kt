@@ -22,7 +22,7 @@ object MockSubscriptionData {
             name = "Amazon",
             logoUrl = "",
             amount = 70.0,
-            nextPaymentDate = "10 Dec",
+            nextPaymentDate = "15 Dec",
             category = SubscriptionCategory.UPCOMING,
             status = SubscriptionStatus.UPCOMING
         ),
@@ -31,7 +31,7 @@ object MockSubscriptionData {
             name = "Capcut",
             logoUrl = "",
             amount = 100.0,
-            nextPaymentDate = "5 Dec",
+            nextPaymentDate = "25 Dec",
             category = SubscriptionCategory.UPCOMING,
             status = SubscriptionStatus.UPCOMING
         ),
