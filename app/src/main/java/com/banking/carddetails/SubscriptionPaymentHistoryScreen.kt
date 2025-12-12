@@ -89,24 +89,26 @@ fun SubscriptionPaymentHistoryScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "05.12.2025 • 11:42  |  ",
+                    text = "${subscriptionDetails.paymentHistory.firstOrNull()?.date ?: "08.12.2025"} • 04:12",
                     fontSize = 14.sp,
                     color = Color(0xFFB0B0B0)
                 )
-                Icon(
-                    imageVector = Icons.Outlined.Refresh,
-                    contentDescription = null,
-                    tint = Color(0xFFB0B0B0),
-                    modifier = Modifier.size(16.dp)
-                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "  Processing",
+                    text = "|",
                     fontSize = 14.sp,
                     color = Color(0xFFB0B0B0)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    imageVector = Icons.Outlined.CheckCircle,
+                    contentDescription = null,
+                    tint = Color(0xFF00C896),
+                    modifier = Modifier.size(16.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Amount
             Text(
@@ -117,15 +119,30 @@ fun SubscriptionPaymentHistoryScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Balance after transaction
-            Text(
-                text = "Balance after transaction: 9 734.73 ${sub.currency}",
-                fontSize = 14.sp,
-                color = Color(0xFFB0B0B0),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 32.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Balance after transaction:",
+                    fontSize = 14.sp,
+                    color = Color(0xFFB0B0B0),
+                    textAlign = TextAlign.Start
+                )
+                Spacer(modifier = Modifier.width(24.dp))
+                Text(
+                    text = "9 734.73 ${sub.currency}",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                    textAlign = TextAlign.End
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -154,11 +171,11 @@ fun SubscriptionPaymentHistoryScreen(
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            // Logo and name
+                            // Logo and merchant name
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                // Use actual icon from drawable
+                                // Use subscription icon if available
                                 val iconRes = getSubscriptionIcon(sub.name)
                                 if (iconRes != null) {
                                     Image(
@@ -170,26 +187,25 @@ fun SubscriptionPaymentHistoryScreen(
                                         contentScale = ContentScale.Fit
                                     )
                                 } else {
-                                    // Fallback to colored circle
                                     Box(
                                         modifier = Modifier
                                             .size(48.dp)
                                             .clip(CircleShape)
-                                            .background(getSubscriptionColor(sub.name)),
+                                            .background(Color(0xFFF2F2F7)),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text(
-                                            text = sub.name.first().toString(),
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
+                                        Icon(
+                                            imageVector = Icons.Outlined.Receipt,
+                                            contentDescription = null,
+                                            tint = Color(0xFF8E8E93),
+                                            modifier = Modifier.size(24.dp)
                                         )
                                     }
                                 }
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
                                     text = sub.name,
-                                    fontSize = 20.sp,
+                                    fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF1C1C1E)
                                 )
@@ -203,19 +219,51 @@ fun SubscriptionPaymentHistoryScreen(
                             DetailRow("Source", subscriptionDetails.source)
                             Spacer(modifier = Modifier.height(12.dp))
                             DetailRow(
-                                "Amount",
-                                "${sub.amount.toInt()}.00 ${sub.currency}",
+                                "Amount in card currency",
+                                "${(sub.amount * 17.25).toInt()}.${((sub.amount * 17.25) % 1 * 100).toInt().toString().padStart(2, '0')} MDL",
                                 hasInfoIcon = true
                             )
+                            Spacer(modifier = Modifier.height(12.dp))
+                            DetailRow("Exchange Rate", "1 ${sub.currency} = 17.25 MDL")
 
                             // Additional details - shown/hidden based on isDetailsExpanded
                             if (isDetailsExpanded) {
-                                Spacer(modifier = Modifier.height(12.dp))
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Divider(color = Color(0xFFE5E5EA))
+                                Spacer(modifier = Modifier.height(16.dp))
                                 DetailRow("RRN", subscriptionDetails.rrn)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 DetailRow("APPC", subscriptionDetails.appc)
                                 Spacer(modifier = Modifier.height(12.dp))
-                                DetailRow("Additional information", subscriptionDetails.additionalInfo)
+                                DetailRow("MCC", "5818")
+                                Spacer(modifier = Modifier.height(12.dp))
+                                DetailRow("Additional Information", subscriptionDetails.additionalInfo)
+
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Divider(color = Color(0xFFE5E5EA))
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Category section
+                                Text(
+                                    text = "Category",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color(0xFF8E8E93)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(8.dp),
+                                    color = Color(0xFFF9F9F9),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE5E5EA))
+                                ) {
+                                    Text(
+                                        text = "Digital Goods",
+                                        fontSize = 15.sp,
+                                        color = Color(0xFF1C1C1E),
+                                        modifier = Modifier.padding(12.dp)
+                                    )
+                                }
                             }
 
                             Spacer(modifier = Modifier.height(16.dp))
@@ -245,9 +293,67 @@ fun SubscriptionPaymentHistoryScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
 
+                // Split in installments button
+                item {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { /* TODO: Handle split click */ },
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color(0xFFFF9500)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.White.copy(alpha = 0.2f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Refresh,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Split in installments",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.White
+                                )
+                                Text(
+                                    text = "Get back the spent amount directly on your card in just 2 minutes",
+                                    fontSize = 13.sp,
+                                    color = Color.White.copy(alpha = 0.9f),
+                                    lineHeight = 18.sp
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(
+                                imageVector = Icons.Outlined.KeyboardArrowRight,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+
+                // Receipt button
                 item {
                     Surface(
                         modifier = Modifier

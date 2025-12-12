@@ -180,27 +180,28 @@ fun SubscriptionDetailsScreen(
                                 Spacer(modifier = Modifier.height(16.dp))
 
                                 // Upcoming renewal
-                                Row(
+                                Column(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(
                                         text = "Upcoming renewal",
-                                        fontSize = 14.sp,
-                                        color = Color(0xFF8E8E93)
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color(0xFF1C1C1E)
                                     )
-                                    Column(horizontalAlignment = Alignment.End) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
                                         Text(
                                             text = subscriptionDetails.nextBillingDate,
                                             fontSize = 14.sp,
-                                            fontWeight = FontWeight.Medium,
-                                            color = Color(0xFF1C1C1E)
+                                            color = Color(0xFF8E8E93)
                                         )
                                         Text(
                                             text = "${sub.amount.toInt()}.00 ${sub.currency}",
                                             fontSize = 14.sp,
-                                            fontWeight = FontWeight.Medium,
-                                            color = Color(0xFF1C1C1E)
+                                            color = Color(0xFF8E8E93)
                                         )
                                     }
                                 }

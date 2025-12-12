@@ -49,12 +49,6 @@ fun AppNavHost(nav: NavHostController) {
             )
         }
 
-        composable(Routes.SMART) {
-            SmartSubscriptionsScreen(
-                onBack = { nav.popBackStack() }
-            )
-        }
-
         composable(Routes.SUBSCRIPTIONS_LIST) {
             SubscriptionsListScreen(
                 onBack = { nav.popBackStack() },
